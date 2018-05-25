@@ -7,12 +7,12 @@ require 'will_paginate/view_helpers/action_view'
 
 module PolicyManager
   class ExporterView
-    
+
     include ERB::Util
     include ActionView::Helpers
     include WillPaginate::ViewHelpers #if defined?(WillPaginate)
     include WillPaginate::ActionView #if defined?(WillPaginate)
-    
+
     attr_accessor :template, :base_path, :assigns
 
     def self.template
@@ -30,7 +30,7 @@ module PolicyManager
 
     def index_path
       path = @base_path.to_s.gsub(@build_path.to_s, "")
-      len = path.split("/").size 
+      len = path.split("/").size
       case len
       when 2
         @index_path = "./"
@@ -47,12 +47,12 @@ module PolicyManager
       context = self
       ac = PolicyManager::ExporterController.new()
       options = handled_template.merge!({
-        assigns: self.assigns.merge!({
-          base_path: base_path, 
+        locals: self.assigns.merge!({
+          base_path: base_path,
           build_path: @build_path,
           index_path: index_path
         }),
-        layout: PolicyManager::Config.exporter.layout 
+        layout: PolicyManager::Config.exporter.layout
       })
       ac.render_to_string(options)
     end
@@ -72,7 +72,7 @@ module PolicyManager
       rescue URI::InvalidURIError
       end
 
-      if @template.is_a?(String) 
+      if @template.is_a?(String)
         return {inline: @template}
       elsif @template.is_a?(Pathname)
         return {file: @template }
