@@ -9,9 +9,9 @@
 
 
 <div class="card">
- 
+
   <div class="card-body">
-    
+
     <div class="table-responsive">
       <table class="table card-table table-vcenter text-nowrap">
         <thead>
@@ -33,7 +33,7 @@
                 <span class="tag <%=state_color(term.state)%>">
                   <%= I18n.t("terms_app.states.#{term.state}") %>
                 </span>
-              
+
               </td>
               <td><%= term.updated_at %></td>
               <td><%= link_to I18n.t("terms_app.categories.show.table.show"), category_term_path(@category.name, term), class: "btn btn-sm btn-secondary" %></td>
@@ -42,9 +42,9 @@
         </tbody>
       </table>
 
-      
+
     </div>
-  </div> 
+  </div>
 </div>
 
 <%= will_paginate @terms, renderer: PolicyManager::BootstrapLinkRenderer %>

@@ -71,7 +71,7 @@ module PolicyManager
     def default_index_template
       '<h1>links</h1>
       <ul>
-        <% locals[:collection].each do |rule| %>
+        <% local_assigns[:collection].each do |rule| %>
           <li><%= link_to rule.name, "./#{rule.name}" %></li>
         <% end %>
       </ul>'
