@@ -4,7 +4,7 @@ module PolicyManager::Concerns::UserBehavior
 
   included do
     has_many :user_terms, class_name: "PolicyManager::UserTerm", autosave: true
-    has_many :terms, through: :user_terms
+    has_many :terms, through: :user_terms, class_name: "PolicyManager::Term"
     has_many :portability_requests, class_name: "PolicyManager::PortabilityRequest"
 
     # adds policies
@@ -15,18 +15,18 @@ module PolicyManager::Concerns::UserBehavior
 
       if rule.validates_on
 
-        validate :"check_#{rule_name}", :on => rule.validates_on, :if => ->(o){ 
-          return true if rule.if.nil? 
-          rule.if.call(o) rescue true 
+        validate :"check_#{rule_name}", :on => rule.validates_on, :if => ->(o){
+          return true if rule.if.nil?
+          rule.if.call(o) rescue true
         }
 
         define_method :"check_#{rule_name}" do
           if self.send(rule_name).blank? && needs_policy_confirmation_for?(rule.name)
             errors.add(rule_name, "needs confirmation")
           end
-        end  
-      end  
-      
+        end
+      end
+
       define_method :"has_consented_#{rule.name}?" do
         !needs_policy_confirmation_for?(rule.name)
       end
@@ -41,7 +41,7 @@ module PolicyManager::Concerns::UserBehavior
 
     # adds portability rules
     PolicyManager::Config.portability_rules.each do |rule|
-      if rule.collection 
+      if rule.collection
         define_method :"portability_collection_#{rule.name}" do |page=1|
           portability_collection_for(rule, page)
         end
@@ -55,7 +55,7 @@ module PolicyManager::Concerns::UserBehavior
     end
   end
 
-  def 
+  def
 
   def portability_schema
     PolicyManager::Config.portability_rules.map(&:name)
@@ -70,7 +70,7 @@ module PolicyManager::Concerns::UserBehavior
   end
 
   def pending_policies
-    # TODO: this seems to be a litle inefficient, 
+    # TODO: this seems to be a litle inefficient,
     # hint: try to do this in one query
     PolicyManager::Config.rules.select do |c|
       self.needs_policy_confirmation_for?(c.name)
